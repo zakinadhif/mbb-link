@@ -6,7 +6,7 @@ export async function action({ request, context }: Route.LoaderArgs) {
   const { getSession, destroySession } = initSessionStorage(context);
   const session = await getSession(request.headers.get("Cookie"));
 
-  return redirect("/login", {
+  return redirect("/", {
     headers: {
       "Set-Cookie": await destroySession(session),
     },
