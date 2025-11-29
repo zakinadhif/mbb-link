@@ -38,16 +38,17 @@ export default function Dashboard() {
   const { user, sentFeedback, receivedFeedback } = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex gap-4">
-            <Button asChild variant="outline"><Link to="/send">Send New Feedback</Link></Button>
-            <Form action="/logout" method="post">
-                <Button type="submit" variant="ghost">Logout</Button>
-            </Form>
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="max-w-4xl mx-auto bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-8">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <h1 className="text-3xl font-black tracking-tight text-gray-900">Dashboard</h1>
+          <div className="flex gap-4">
+              <Button asChild className="rounded-full shadow-md hover:scale-105 transition-transform"><Link to="/send">Send New Feedback</Link></Button>
+              <Form action="/logout" method="post">
+                  <Button type="submit" variant="ghost" className="rounded-full hover:bg-gray-100">Logout</Button>
+              </Form>
+          </div>
         </div>
-      </div>
 
       <div className="grid md:grid-cols-2 gap-8">
         <div>
@@ -105,6 +106,7 @@ export default function Dashboard() {
             </ul>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

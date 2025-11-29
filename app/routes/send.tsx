@@ -64,40 +64,52 @@ export default function SendFeedback() {
 
   if (actionData?.success) {
     return (
-      <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-sm bg-white">
-        <h2 className="text-2xl font-bold mb-4">Feedback Link Generated!</h2>
-        <p className="mb-4">Share this link with the recipient:</p>
-        <div className="p-3 bg-gray-100 rounded mb-4 break-all font-mono text-sm">
-          {actionData.link}
-        </div>
-        <Button onClick={() => navigator.clipboard.writeText(actionData.link)}>Copy Link</Button>
-        <div className="mt-6">
-            <a href="/send" className="text-blue-600 hover:underline">Send another</a>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl space-y-6 text-center">
+          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2 className="text-3xl font-black tracking-tight text-gray-900">Link Ready! 🎉</h2>
+          <p className="text-lg text-gray-600">Share this link with your friend:</p>
+          <div className="p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 break-all font-mono text-sm text-gray-800 select-all">
+            {actionData.link}
+          </div>
+          <Button size="lg" className="w-full rounded-full font-bold text-lg shadow-lg hover:scale-105 transition-transform" onClick={() => navigator.clipboard.writeText(actionData.link)}>
+            Copy Link
+          </Button>
+          <div className="pt-4">
+              <a href="/send" className="text-primary font-bold hover:underline">Send another</a>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-sm">
-      <h1 className="text-3xl font-bold mb-6">Send Feedback</h1>
-      <Form method="post" className="space-y-6">
-        <div className="space-y-2">
-          <Label>Authentication Method</Label>
-          <Select name="authMethod" value={authMethod} onValueChange={(v: any) => setAuthMethod(v)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select method" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="email">Email Verification</SelectItem>
-              <SelectItem value="question">Personal Question</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="text-sm text-gray-500">
-            {authMethod === "email" 
-              ? "Recipient must log in with this email to view." 
-              : "Recipient must answer a question you set."}
-          </p>
+    <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
+      <div className="w-full max-w-2xl bg-white/95 backdrop-blur-sm p-6 md:p-10 rounded-3xl shadow-2xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-2">Send Feedback</h1>
+          <p className="text-gray-500 font-medium">Write something nice (or constructive)! ✍️</p>
+        </div>
+        
+        <Form method="post" className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-lg font-bold">Authentication Method</Label>
+            <Select name="authMethod" value={authMethod} onValueChange={(v: any) => setAuthMethod(v)}>
+              <SelectTrigger className="h-12 rounded-xl border-2">
+                <SelectValue placeholder="Select method" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="email">Email Verification</SelectItem>
+                <SelectItem value="question">Personal Question</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-gray-500 font-medium">
+              {authMethod === "email" 
+                ? "Recipient must log in with this email to view." 
+                : "Recipient must answer a question you set."}
+            </p>
         </div>
 
         {authMethod === "email" && (
@@ -147,6 +159,7 @@ export default function SendFeedback() {
           {isSubmitting ? "Generating Link..." : "Generate Link"}
         </Button>
       </Form>
+      </div>
     </div>
   );
 }

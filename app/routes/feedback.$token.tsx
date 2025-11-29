@@ -93,10 +93,10 @@ export default function FeedbackView({ params }: Route.ComponentProps) {
     const style = decorationStyles[feedback.decorationPreset] || decorationStyles.default;
 
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-        <div className={`max-w-2xl w-full p-8 rounded-xl shadow-lg border ${style}`}>
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">Feedback for You</h1>
-          <div className="prose prose-lg text-gray-700 whitespace-pre-wrap">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className={`max-w-2xl w-full p-8 rounded-3xl shadow-2xl border-0 ${style} backdrop-blur-sm bg-opacity-95`}>
+          <h1 className="text-3xl font-black mb-6 text-gray-900 tracking-tight">Feedback for You 💌</h1>
+          <div className="prose prose-lg text-gray-800 whitespace-pre-wrap font-medium leading-relaxed">
             {messageText}
           </div>
           <div className="mt-8 pt-6 border-t border-gray-200/50 text-center">
@@ -110,33 +110,38 @@ export default function FeedbackView({ params }: Route.ComponentProps) {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-sm border">
-      <h1 className="text-2xl font-bold mb-6 text-center">Authenticate to View</h1>
-      <p className="mb-6 text-center text-gray-600">
-        This feedback is protected. Please verify your identity to view it.
-      </p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+            🔒
+          </div>
+          <h1 className="text-3xl font-black text-gray-900 mb-2">Locked Feedback</h1>
+          <p className="text-gray-500 font-medium">
+            Verify your identity to unlock this message.
+          </p>
+        </div>
       
       {feedback.authenticationMethod === "email" && (
-        <div className="space-y-4 text-center">
-            <p className="text-sm text-gray-500 mb-4">
-                This feedback is intended for <strong>{feedback.recipientEmail}</strong>.
-                You must be logged in with this email address to view it.
-            </p>
+        <div className="space-y-6 text-center">
+            <div className="p-4 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium">
+                This feedback is for <strong>{feedback.recipientEmail}</strong>.
+            </div>
             
             {user ? (
-                <div className="p-4 bg-red-50 text-red-600 rounded border border-red-200">
+                <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm">
                     You are logged in as <strong>{user.email}</strong>.
                     <br />
                     This does not match the recipient email.
-                    <div className="mt-2">
+                    <div className="mt-4">
                         <Form action="/logout" method="post">
-                            <Button variant="outline" size="sm">Logout</Button>
+                            <Button variant="outline" size="sm" className="rounded-full">Logout</Button>
                         </Form>
                     </div>
                 </div>
             ) : (
               <Form method="post" action={`/login?returnTo=/feedback/${params.token}`}>
-                <Button className="w-full" type="submit">
+                <Button className="w-full rounded-full font-bold text-lg h-12 shadow-lg hover:scale-105 transition-transform" type="submit">
                     Login with Google
                 </Button>
               </Form>
@@ -145,19 +150,20 @@ export default function FeedbackView({ params }: Route.ComponentProps) {
       )}
 
       {feedback.authenticationMethod === "question" && (
-        <Form method="post" className="space-y-4">
+        <Form method="post" className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="answer">{feedback.personalQuestion}</Label>
-            <Input id="answer" name="answer" placeholder="Your answer" required />
+            <Label htmlFor="answer" className="text-lg font-bold block text-center">{feedback.personalQuestion}</Label>
+            <Input id="answer" name="answer" placeholder="Type your answer..." required className="h-12 rounded-xl text-center text-lg" />
           </div>
 
           {actionData?.error && (
-            <p className="text-red-500 text-sm text-center">{actionData.error}</p>
+            <p className="text-red-500 font-bold text-sm text-center bg-red-50 p-2 rounded-lg">{actionData.error}</p>
           )}
 
-          <Button type="submit" className="w-full">View Feedback</Button>
+          <Button type="submit" className="w-full rounded-full font-bold text-lg h-12 shadow-lg hover:scale-105 transition-transform">Unlock Feedback</Button>
         </Form>
       )}
+    </div>
     </div>
   );
 }
