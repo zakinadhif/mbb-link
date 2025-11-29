@@ -8,7 +8,7 @@ import { format } from "date-fns";
 export async function loader({ request, context }: Route.LoaderArgs) {
   const authService = new AuthService(context);
   const user = await authService.getCurrentUser(request);
-  if (!user) return redirect("/login");
+  if (!user) return redirect("/");
 
   const feedbackService = new FeedbackService(context);
   const sentFeedback = await feedbackService.getSentFeedback(user.id);
@@ -20,7 +20,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export async function action({ request, context }: Route.ActionArgs) {
   const authService = new AuthService(context);
   const user = await authService.getCurrentUser(request);
-  if (!user) return redirect("/login");
+  if (!user) return redirect("/");
 
   const formData = await request.formData();
   const intent = formData.get("intent");

@@ -25,6 +25,6 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       }
     });
   } catch (error) {
-    return redirect("/login?error=authentication_failed");
+    return redirect("/?error=authentication_failed");
   }
 }

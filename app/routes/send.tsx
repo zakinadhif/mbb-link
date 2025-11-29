@@ -13,14 +13,14 @@ import { useState } from "react";
 export async function loader({ request, context }: Route.LoaderArgs) {
   const authService = new AuthService(context);
   const user = await authService.getCurrentUser(request);
-  if (!user) return redirect("/login");
+  if (!user) return redirect("/");
   return { user };
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
   const authService = new AuthService(context);
   const user = await authService.getCurrentUser(request);
-  if (!user) return redirect("/login");
+  if (!user) return redirect("/");
 
   const formData = await request.formData();
   const recipientEmail = formData.get("recipientEmail") as string;
