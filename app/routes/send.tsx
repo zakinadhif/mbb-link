@@ -2,7 +2,6 @@ import type { Route } from "./+types/send";
 import { Form, redirect, useActionData, useNavigation, useLoaderData } from "react-router";
 import { AuthService } from "~/services/auth.server";
 import { FeedbackService } from "~/services/feedback.server";
-import { UserService } from "~/services/user.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -41,26 +40,10 @@ export async function action({ request, context }: Route.ActionArgs) {
   if (Object.keys(errors).length > 0) return { errors };
 
   const feedbackService = new FeedbackService(context);
-  const userService = new UserService(context);
-
-  let recipientUserId: string | null = null;
-  // We no longer force create the user. We just store the email.
-  // If the user exists, we could link them, but for now let's just store the email
-  // and rely on the email field for auth.
-  // Ideally we would check if user exists and link if so, but the requirement
-  // is just to not REQUIRE it.
-  
-  // Let's try to find the user by email without creating
-  // But UserService doesn't have findByEmail (only findOrCreate).
-  // So we will just pass null for recipientUserId if we don't want to force create.
-  // Actually, if we want to support "Dashboard" for existing users, we should try to find them.
-  // But I don't have a findUserByEmail method exposed that doesn't create.
-  // I'll just skip linking for now to satisfy the "don't require account" request strictly.
-  // The email will be stored in recipientEmail.
 
   const feedback = await feedbackService.createFeedback({
     senderUserId: user.id,
-    recipientUserId: null, // We will link this later or never
+    recipientUserId: null, // Explicitly null to ensure no automatic linking at creation
     recipientEmail: authMethod === "email" ? recipientEmail : undefined,
     authenticationMethod: authMethod,
     personalQuestion,

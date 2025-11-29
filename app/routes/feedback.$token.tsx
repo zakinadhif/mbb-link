@@ -34,6 +34,9 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
           const targetEmail = feedback.recipientEmail || feedback.recipient?.email;
           if (targetEmail && user.email === targetEmail) {
               canView = true;
+              if (!feedback.recipientUserId) {
+                  await feedbackService.linkRecipient(feedback.id, user.id);
+              }
           }
       }
   }

@@ -106,4 +106,10 @@ export class FeedbackService {
         eq(feedbackMessages.senderUserId, userId)
       ));
   }
+
+  async linkRecipient(feedbackId: string, userId: string) {
+    await this.db.update(feedbackMessages)
+      .set({ recipientUserId: userId })
+      .where(eq(feedbackMessages.id, feedbackId));
+  }
 }
