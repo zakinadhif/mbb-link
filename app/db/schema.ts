@@ -35,6 +35,7 @@ export const feedbackMessages = sqliteTable("feedback_messages", {
   personalAnswerHash: text("personal_answer_hash"),
   messageText: text("message_text").notNull(),
   decorationPreset: text("decoration_preset").notNull(),
+  stickers: text("stickers", { mode: "json" }),
   linkToken: text("link_token").notNull().unique(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`),
   deletedAt: integer("deleted_at", { mode: "timestamp" }),

@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
+import { StickerEditor } from "~/components/sticker-editor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { useState } from "react";
 
@@ -28,6 +29,8 @@ export async function action({ request, context }: Route.ActionArgs) {
   const personalAnswer = formData.get("personalAnswer") as string;
   const messageText = formData.get("messageText") as string;
   const decorationPreset = formData.get("decorationPreset") as string || "default";
+  const stickersJson = formData.get("stickers") as string;
+  const stickers = stickersJson ? JSON.parse(stickersJson) : undefined;
 
   const errors: Record<string, string> = {};
   if (!messageText) errors.messageText = "Message is required";
@@ -50,6 +53,7 @@ export async function action({ request, context }: Route.ActionArgs) {
     personalAnswer,
     messageText,
     decorationPreset,
+    stickers,
   });
 
   return { success: true, link: `${new URL(request.url).origin}/feedback/${feedback.linkToken}` };
@@ -61,6 +65,8 @@ export default function SendFeedback() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const [authMethod, setAuthMethod] = useState<"email" | "question">("email");
+  const [messageText, setMessageText] = useState("");
+  const [stickers, setStickers] = useState<any[]>([]);
 
   if (actionData?.success) {
     return (
@@ -136,9 +142,18 @@ export default function SendFeedback() {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="messageText">Message</Label>
-          <Textarea id="messageText" name="messageText" placeholder="Write your constructive feedback here..." className="min-h-[150px]" />
-          {actionData?.errors?.messageText && <p className="text-red-500 text-sm">{actionData.errors.messageText}</p>}
+          <Label className="text-lg font-bold">Your Message</Label>
+          <div className="border-2 rounded-xl overflow-hidden">
+            <StickerEditor 
+              onChange={(html, newStickers) => {
+                setMessageText(html);
+                setStickers(newStickers);
+              }} 
+            />
+          </div>
+          <input type="hidden" name="messageText" value={messageText} />
+          <input type="hidden" name="stickers" value={JSON.stringify(stickers)} />
+          {actionData?.errors?.messageText && <p className="text-red-500 text-sm font-bold">{actionData.errors.messageText}</p>}
         </div>
 
         <div className="space-y-2">

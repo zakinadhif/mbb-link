@@ -5,6 +5,7 @@ import { AuthService } from "~/services/auth.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { StickerEditor } from "~/components/sticker-editor";
 
 export async function loader({ request, params, context }: Route.LoaderArgs) {
   const feedbackService = new FeedbackService(context);
@@ -48,6 +49,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
       personalQuestion: feedback.personalQuestion,
       decorationPreset: feedback.decorationPreset,
       messageText: canView ? feedback.messageText : null,
+      stickers: canView ? feedback.stickers : null,
       recipientEmail: feedback.recipientEmail || feedback.recipient?.email,
     },
     user,
@@ -70,7 +72,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
   }
 
   if (isValid) {
-    return { success: true, messageText: feedback.messageText };
+    return { success: true, messageText: feedback.messageText, stickers: feedback.stickers };
   } else {
     return { error: "Incorrect answer." };
   }
@@ -82,26 +84,21 @@ export default function FeedbackView({ params }: Route.ComponentProps) {
   
   const showContent = initialCanView || actionData?.success;
   const messageText = initialCanView ? feedback.messageText : actionData?.messageText;
+  const stickers = initialCanView ? feedback.stickers : actionData?.stickers;
 
   if (showContent) {
-    // Decoration styles
-    const decorationStyles: Record<string, string> = {
-        default: "bg-white border-gray-200",
-        warm: "bg-orange-50 border-orange-200",
-        professional: "bg-slate-50 border-slate-200 font-serif",
-    };
-    const style = decorationStyles[feedback.decorationPreset] || decorationStyles.default;
-
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className={`max-w-2xl w-full p-8 rounded-3xl shadow-2xl border-0 ${style} backdrop-blur-sm bg-opacity-95`}>
-          <h1 className="text-3xl font-black mb-6 text-gray-900 tracking-tight">Feedback for You 💌</h1>
-          <div className="prose prose-lg text-gray-800 whitespace-pre-wrap font-medium leading-relaxed">
-            {messageText}
-          </div>
-          <div className="mt-8 pt-6 border-t border-gray-200/50 text-center">
-            <p className="text-sm text-gray-500">
-              Sent via <a href="/" className="font-semibold hover:underline">mbb.link</a>
+        <div className="max-w-2xl w-full">
+          <h1 className="text-3xl font-black mb-6 text-white text-center drop-shadow-md">Feedback for You 💌</h1>
+          <StickerEditor 
+            initialContent={messageText || ""} 
+            initialStickers={stickers as any[] || []} 
+            readOnly={true} 
+          />
+          <div className="mt-8 text-center">
+            <p className="text-sm text-white/80 font-medium drop-shadow-sm">
+              Sent via <a href="/" className="font-bold hover:underline text-white">mbb.link</a>
             </p>
           </div>
         </div>

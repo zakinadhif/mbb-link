@@ -5,37 +5,37 @@ import { cloudflareContext } from "~/context";
 
 export async function loader({ params, context, request }: Route.LoaderArgs) {
   const storageService = new StorageService(context);
-  const ctx = context.get(cloudflareContext);
-
   const key = params["*"];
 
-  const parts = key?.split("/") ?? [];
-  const variant = parts.at(-1);
-  const fileKey = parts.slice(0, -1).join("/");
+  // const ctx = context.get(cloudflareContext);
 
-  if (ctx.cloudflare.env.APP_ENV === "development" && variant === "original") {
-    const file = await storageService.fetchFile(fileKey as string);
+  // const parts = key?.split("/") ?? [];
+  // const variant = parts.at(-1);
+  // const fileKey = parts.slice(0, -1).join("/");
 
-    if (!file) {
-      return data({ error: "File not found" }, { status: 404 });
-    }
+  // if (ctx.cloudflare.env.APP_ENV === "development" && variant === "original") {
+  //   const file = await storageService.fetchFile(fileKey as string);
 
-    return new Response(file.body, {
-      headers: {
-        "Content-Type": file.httpMetadata?.contentType || "application/octet-stream",
-        "Content-Length": file.size.toString(),
-        "ETag": file.httpEtag,
-        "Last-Modified": new Date(file.uploaded).toUTCString(),
-        "Cache-Control": "public, max-age=31536000",
-      }
-    });
-  }
+  //   if (!file) {
+  //     return data({ error: "File not found" }, { status: 404 });
+  //   }
+
+  //   return new Response(file.body, {
+  //     headers: {
+  //       "Content-Type": file.httpMetadata?.contentType || "application/octet-stream",
+  //       "Content-Length": file.size.toString(),
+  //       "ETag": file.httpEtag,
+  //       "Last-Modified": new Date(file.uploaded).toUTCString(),
+  //       "Cache-Control": "public, max-age=31536000",
+  //     }
+  //   });
+  // }
 
   // if (!variant || !Object.keys(imageVariants).includes(variant)) {
   //   return data({ error: "Invalid variant" }, { status: 400 });
   // }
 
-  const file = await storageService.fetchFile(fileKey as string);
+  const file = await storageService.fetchFile(key as string);
 
   if (!file) {
     return data({ error: "File not found" }, { status: 404 });

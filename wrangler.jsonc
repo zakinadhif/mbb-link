@@ -39,7 +39,13 @@
 		"GOOGLE_CLIENT_ID": "1067786088396-qhs0p5rgv8g3sbh5rm6po6p6aqtcgvtq.apps.googleusercontent.com",
 		"GOOGLE_REDIRECT_URI": "https://mbb-link.muh-zakinadhif.workers.dev/api/auth/callback/google",
 		"APP_ENV": "production"
-	}
+	},
+	"r2_buckets": [
+		{
+			"bucket_name": "mbb-link-r2",
+			"binding": "R2"
+		}
+	]
 	/**
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables

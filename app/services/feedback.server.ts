@@ -22,6 +22,7 @@ export class FeedbackService {
     personalAnswer?: string;
     messageText: string;
     decorationPreset: string;
+    stickers?: any;
   }) {
     let personalAnswerHash = null;
     if (data.authenticationMethod === "question" && data.personalAnswer) {
@@ -41,6 +42,7 @@ export class FeedbackService {
       personalAnswerHash,
       messageText: data.messageText,
       decorationPreset: data.decorationPreset,
+      stickers: data.stickers,
       linkToken: nanoid(10),
     }).returning();
 
