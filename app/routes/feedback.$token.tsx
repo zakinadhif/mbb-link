@@ -1,5 +1,5 @@
 import type { Route } from "./+types/feedback.$token";
-import { Form, useActionData, useLoaderData } from "react-router";
+import { Form, useActionData, useLoaderData, Link } from "react-router";
 import { FeedbackService } from "~/services/feedback.server";
 import { AuthService } from "~/services/auth.server";
 import { Button } from "~/components/ui/button";
@@ -18,8 +18,24 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   const user = await authService.getCurrentUser(request);
 
   let canView = false;
-  if (user && (feedback.recipientUserId === user.id || feedback.senderUserId === user.id)) {
+  
+  // Allow sender to view
+  if (user && feedback.senderUserId === user.id) {
     canView = true;
+  }
+
+  // Allow recipient to view if they match the criteria
+  if (user) {
+      if (feedback.recipientUserId === user.id) {
+          canView = true;
+      }
+      
+      if (feedback.authenticationMethod === "email") {
+          const targetEmail = feedback.recipientEmail || feedback.recipient?.email;
+          if (targetEmail && user.email === targetEmail) {
+              canView = true;
+          }
+      }
   }
 
   return { 
@@ -29,6 +45,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
       personalQuestion: feedback.personalQuestion,
       decorationPreset: feedback.decorationPreset,
       messageText: canView ? feedback.messageText : null,
+      recipientEmail: feedback.recipientEmail || feedback.recipient?.email,
     },
     user,
     canView
@@ -41,31 +58,23 @@ export async function action({ request, params, context }: Route.ActionArgs) {
   if (!feedback) throw new Response("Not Found", { status: 404 });
 
   const formData = await request.formData();
-  const email = formData.get("email") as string;
   const answer = formData.get("answer") as string;
 
   let isValid = false;
 
-  if (feedback.authenticationMethod === "email") {
-    // Check against stored recipientEmail OR linked user email
-    if (feedback.recipientEmail && feedback.recipientEmail === email) {
-      isValid = true;
-    } else if (feedback.recipient && feedback.recipient.email === email) {
-      isValid = true;
-    }
-  } else if (feedback.authenticationMethod === "question") {
+  if (feedback.authenticationMethod === "question") {
     isValid = await feedbackService.validateAnswer(feedback, answer);
   }
 
   if (isValid) {
     return { success: true, messageText: feedback.messageText };
   } else {
-    return { error: "Incorrect authentication details." };
+    return { error: "Incorrect answer." };
   }
 }
 
-export default function FeedbackView() {
-  const { feedback, canView: initialCanView } = useLoaderData<typeof loader>();
+export default function FeedbackView({ params }: Route.ComponentProps) {
+  const { feedback, user, canView: initialCanView } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   
   const showContent = initialCanView || actionData?.success;
@@ -104,27 +113,48 @@ export default function FeedbackView() {
         This feedback is protected. Please verify your identity to view it.
       </p>
       
-      <Form method="post" className="space-y-4">
-        {feedback.authenticationMethod === "email" && (
-          <div className="space-y-2">
-            <Label htmlFor="email">Enter your email address</Label>
-            <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-          </div>
-        )}
+      {feedback.authenticationMethod === "email" && (
+        <div className="space-y-4 text-center">
+            <p className="text-sm text-gray-500 mb-4">
+                This feedback is intended for <strong>{feedback.recipientEmail}</strong>.
+                You must be logged in with this email address to view it.
+            </p>
+            
+            {user ? (
+                <div className="p-4 bg-red-50 text-red-600 rounded border border-red-200">
+                    You are logged in as <strong>{user.email}</strong>.
+                    <br />
+                    This does not match the recipient email.
+                    <div className="mt-2">
+                        <Form action="/logout" method="post">
+                            <Button variant="outline" size="sm">Logout</Button>
+                        </Form>
+                    </div>
+                </div>
+            ) : (
+              <Form method="post" action={`/login?returnTo=/feedback/${params.token}`}>
+                <Button className="w-full" type="submit">
+                    Login with Google
+                </Button>
+              </Form>
+            )}
+        </div>
+      )}
 
-        {feedback.authenticationMethod === "question" && (
+      {feedback.authenticationMethod === "question" && (
+        <Form method="post" className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="answer">{feedback.personalQuestion}</Label>
             <Input id="answer" name="answer" placeholder="Your answer" required />
           </div>
-        )}
 
-        {actionData?.error && (
-          <p className="text-red-500 text-sm text-center">{actionData.error}</p>
-        )}
+          {actionData?.error && (
+            <p className="text-red-500 text-sm text-center">{actionData.error}</p>
+          )}
 
-        <Button type="submit" className="w-full">View Feedback</Button>
-      </Form>
+          <Button type="submit" className="w-full">View Feedback</Button>
+        </Form>
+      )}
     </div>
   );
 }

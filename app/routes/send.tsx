@@ -112,7 +112,7 @@ export default function SendFeedback() {
           </Select>
           <p className="text-sm text-gray-500">
             {authMethod === "email" 
-              ? "Recipient must enter their email to view." 
+              ? "Recipient must log in with this email to view." 
               : "Recipient must answer a question you set."}
           </p>
         </div>

@@ -20,9 +20,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const returnTo = authTransactionContext.get("returnTo") || "/";
 
     return redirect(returnTo, {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session)
-      }
+      headers: [
+        ["Set-Cookie", await sessionStorage.commitSession(session)],
+        ["Set-Cookie", await authTransactionContextStorage.destroySession(authTransactionContext)],
+      ]
     });
   } catch (error) {
     return redirect("/?error=authentication_failed");

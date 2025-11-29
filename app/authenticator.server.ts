@@ -25,7 +25,7 @@ export const initAuthTransactionContextStorage = (context: ContextProvider) => {
       sameSite: "lax",
       secrets: [cloudflare.env.COOKIE_SECRET],
       secure: cloudflare.env.APP_ENV === "production",
-      maxAge: 60 * 1, // 1 minutes
+      maxAge: 60 * 3, // 3 minutes
     },
   });
 

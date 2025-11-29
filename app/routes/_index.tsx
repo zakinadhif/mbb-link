@@ -1,9 +1,8 @@
 import type { Route } from "./+types/_index";
 import { authContext } from "~/context";
 import { AuthService } from "~/services/auth.server";
-import { Link, useFetcher } from "react-router";
+import { Form, Link, useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
-import { initAuthenticator } from "~/authenticator.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -25,12 +24,6 @@ export async function loader({ context }: Route.LoaderArgs) {
   const user = context.get(authContext).user;
 
   return { user };
-}
-
-export async function action({ request, context }: Route.ActionArgs) {
-  const authenticator = initAuthenticator(context);
-
-  await authenticator.authenticate("google", request);
 }
 
 export default function IndexRoute({ loaderData }: Route.ComponentProps) {
@@ -55,9 +48,11 @@ export default function IndexRoute({ loaderData }: Route.ComponentProps) {
             </Button>
           </>
         ) : (
-          <Button size="lg" onClick={() => { fetcher.submit({ provider: "google" }, { method: "post"}); }}>
-            Login with Google
-          </Button>
+          <Form method="post" action="/login">
+            <Button size="lg" type="submit">
+              Login with Google
+            </Button>
+          </Form>
         )}
       </div>
     </div>
