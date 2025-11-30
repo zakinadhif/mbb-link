@@ -299,7 +299,7 @@ export function StickerEditor({ initialContent = "", initialStickers = [], readO
   const AVAILABLE_STICKERS = ["❤️", "🔥", "✨", "🎉", "🥺", "😂", "👻", "💀", "👀", "💯", "🌈", "🦄"];
 
   return (
-    <div className="space-y-4">
+    <div>
       {!readOnly && (
         <div className="flex items-center gap-2">
             <div className="relative">
@@ -310,7 +310,7 @@ export function StickerEditor({ initialContent = "", initialStickers = [], readO
                     onChange={handleImageUpload}
                     disabled={isUploading}
                 />
-                <Button variant="outline" size="icon" className="rounded-full shrink-0" disabled={isUploading}>
+                <Button variant="outline" size="icon" className="rounded-full shrink-0 ml-4 mr-2" disabled={isUploading}>
                     {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
                 </Button>
             </div>
