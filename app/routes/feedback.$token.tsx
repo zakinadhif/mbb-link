@@ -5,7 +5,7 @@ import { AuthService } from "~/services/auth.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { StickerEditor } from "~/components/sticker-editor";
+import { Editor } from "~/components/sticker-editor";
 
 export async function loader({ request, params, context }: Route.LoaderArgs) {
   const feedbackService = new FeedbackService(context);
@@ -91,7 +91,7 @@ export default function FeedbackView({ params }: Route.ComponentProps) {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
           <h1 className="text-3xl font-black mb-6 text-white text-center drop-shadow-md">Feedback for You 💌</h1>
-          <StickerEditor 
+          <Editor 
             initialContent={messageText || ""} 
             initialStickers={stickers as any[] || []} 
             readOnly={true} 

@@ -1,10 +1,9 @@
 import { createContext, RouterContextProvider } from "react-router";
-import type { UserWithProfile } from "./services/user.server";
 
 export type ContextProvider = Readonly<RouterContextProvider>;
 
 export type AuthContext = {
-  user: UserWithProfile | null;
+  userId: string | null;
 }
 
 export type CloudflareContext = {

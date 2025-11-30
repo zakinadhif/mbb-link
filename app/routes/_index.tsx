@@ -1,5 +1,4 @@
 import type { Route } from "./+types/_index";
-import { authContext } from "~/context";
 import { AuthService } from "~/services/auth.server";
 import { Form, Link, useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
@@ -11,24 +10,15 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-async function authMiddleware({ request, context }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const authService = new AuthService(context);
   const user = await authService.getCurrentUser(request);
-
-  context.set(authContext, { user });
-}
-
-export const middleware: Route.MiddlewareFunction[] = [authMiddleware];
-
-export async function loader({ context }: Route.LoaderArgs) {
-  const user = context.get(authContext).user;
 
   return { user };
 }
 
 export default function IndexRoute({ loaderData }: Route.ComponentProps) {
   const { user } = loaderData;
-  const fetcher = useFetcher();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
@@ -38,7 +28,7 @@ export default function IndexRoute({ loaderData }: Route.ComponentProps) {
             mbb.link
           </h1>
           <p className="text-xl font-medium text-gray-600">
-            Send anonymous feedback to your friends! 💌
+            Send sincere feedback to your friends! 💌
           </p>
         </div>
 

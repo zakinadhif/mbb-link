@@ -3,7 +3,6 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { DndContext, useDraggable, useSensor, useSensors, MouseSensor, TouchSensor, type DragEndEvent, type Modifier } from "@dnd-kit/core";
-import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { Paper } from "./paper";
 import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
@@ -19,7 +18,7 @@ interface Sticker {
   rotation: number;
 }
 
-interface StickerEditorProps {
+interface EditorProps {
   initialContent?: string;
   initialStickers?: Sticker[];
   readOnly?: boolean;
@@ -193,7 +192,7 @@ const DraggableSticker = ({ sticker, readOnly, onRotate }: { sticker: Sticker; r
   );
 };
 
-export function StickerEditor({ initialContent = "", initialStickers = [], readOnly = false, onChange }: StickerEditorProps) {
+export function Editor({ initialContent = "", initialStickers = [], readOnly = false, onChange }: EditorProps) {
   const [stickers, setStickers] = useState<Sticker[]>(initialStickers);
   const [isUploading, setIsUploading] = useState(false);
 

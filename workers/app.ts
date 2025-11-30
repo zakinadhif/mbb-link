@@ -20,7 +20,6 @@ export default {
   async fetch(request, env, ctx) {
     const context = new RouterContextProvider();
     context.set(cloudflareContext, { cloudflare: { env, ctx } });
-    context.set(authContext, { user: null });
 
     return requestHandler(request, context);
   },

@@ -5,6 +5,11 @@ import { FeedbackService } from "~/services/feedback.server";
 import { Button } from "~/components/ui/button";
 import { format } from "date-fns";
 
+function stripHtml(html: string) {
+  if (!html) return "";
+  return html.replace(/<[^>]*>?/gm, '');
+}
+
 export async function loader({ request, context }: Route.LoaderArgs) {
   const authService = new AuthService(context);
   const user = await authService.getCurrentUser(request);
@@ -61,7 +66,7 @@ export default function Dashboard() {
                 <li key={fb.id} className="p-4 bg-white border rounded shadow-sm">
                   <div className="flex justify-between items-start">
                     <div className="overflow-hidden">
-                        <p className="font-medium truncate w-48">{fb.messageText.substring(0, 50)}...</p>
+                        <p className="font-medium truncate w-48">{stripHtml(fb.messageText).substring(0, 50)}...</p>
                         <p className="text-xs text-gray-500">{format(new Date(fb.createdAt!), 'MMM d, yyyy')}</p>
                     </div>
                     <Button asChild size="sm" variant="secondary" className="ml-2">
@@ -84,7 +89,7 @@ export default function Dashboard() {
                 <li key={fb.id} className="p-4 bg-white border rounded shadow-sm">
                   <div className="flex justify-between items-start">
                     <div className="overflow-hidden">
-                        <p className="font-medium truncate w-48">{fb.messageText.substring(0, 50)}...</p>
+                        <p className="font-medium truncate w-48">{stripHtml(fb.messageText).substring(0, 50)}...</p>
                         <p className="text-xs text-gray-500">
                             To: {fb.recipient ? fb.recipient.email : (fb.recipientEmail || (fb.authenticationMethod === 'question' ? 'Question Auth' : 'Unknown'))}
                         </p>

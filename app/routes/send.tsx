@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { StickerEditor } from "~/components/sticker-editor";
+import { Editor } from "~/components/sticker-editor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { useState } from "react";
 
@@ -144,7 +144,7 @@ export default function SendFeedback() {
         <div className="space-y-2">
           <Label className="text-lg font-bold">Your Message</Label>
           <div className="border-2 rounded-xl overflow-hidden">
-            <StickerEditor 
+            <Editor 
               onChange={(html, newStickers) => {
                 setMessageText(html);
                 setStickers(newStickers);

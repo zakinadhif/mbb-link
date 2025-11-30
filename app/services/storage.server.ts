@@ -1,4 +1,3 @@
-import type { AppLoadContext } from 'react-router';
 import { cloudflareContext, type ContextProvider } from '~/context';
 
 /**
